@@ -15,7 +15,7 @@
    - Linux 🐧:
     
    
-    source venv/bin/activate
+    source env/bin/activate
    
     
 ### 3) Instalar Dependencias: 
