@@ -1,16 +1,18 @@
 <template>
   <v-card max-width="450" class="mx-auto">
-    <v-list three-line>
-      <template v-for="task in tasks">
-        <v-list-item :key="task.id">
+    <template v-for="task in tasks">
+      <v-list three-line id="o que isso" :key="task.id">
+        <v-list-item :id="task.id">
           <v-col class="flex-grow-0 pa-0 pr-10 text-center">
             <p class="" v-html="task.contato_id"></p>
           </v-col>
           <v-list-item-content>
             <v-row class="ma-0">
-              <v-list-item-title
-                class="no-flex"
-              ><strong>{{task.id}}-{{task.titulo}}</strong></v-list-item-title>
+              <v-list-item-title class="no-flex"
+                ><strong
+                  >{{ task.titulo }}</strong
+                ></v-list-item-title
+              >
               <v-checkbox
                 :input-value="task.ativo"
                 class="ma-0 mt-4"
@@ -22,38 +24,23 @@
               v-html="task.descricao"
             ></v-list-item-subtitle>
             <v-row class="ma-0 float-rigth no-flex justify-end">
-              <v-btn elevation="2" raised @click="overlay = !overlay">
-                Editar</v-btn
+              <v-btn elevation="2" raised @click="overlayEdit = !overlayEdit">
+                Editar{{task.id}}</v-btn
               >
               <v-btn
                 elevation="2"
                 raised
                 color="error"
+                :key="task.id"
                 @click="taskDelete(task)"
               >
-                Deletar</v-btn
+                Deletar{{task.id}}</v-btn
               >
-              <v-overlay :z-index="zIndex" :value="overlayDelete" class="ma-auto">
-                <v-btn
-                  class="white--text mr-5"
-                  color="error"
-                  @click="overlayDelete = false"
-                >
-                  Não deletar
-                </v-btn>
+              <v-overlay :z-index="zIndex" :value="overlayEdit">
                 <v-btn
                   class="white--text"
                   color="error"
-                  @click="overlayDelete = false"
-                >
-                Deletar
-                </v-btn>
-              </v-overlay>
-              <v-overlay :z-index="zIndex" :value="overlay">
-                <v-btn
-                  class="white--text"
-                  color="error"
-                  @click="overlay = false"
+                  @click="overlayEdit = false"
                   absolute
                   right
                   top
@@ -62,13 +49,13 @@
                 >
                   x
                 </v-btn>
-                <TaskOverlay />
+                <TaskOverlay :task="tasks"/>
               </v-overlay>
             </v-row>
           </v-list-item-content>
         </v-list-item>
-      </template>
-    </v-list>
+      </v-list>
+    </template>
   </v-card>
 </template>
 
@@ -87,29 +74,28 @@ export default {
   },
   data: () => ({
     tasks: [],
-    overlay: false,
-    overlayDelete: false,
-    zIndex: 10,
+    overlayEdit: false,
+    zIndex: 100,
   }),
-
+  methods: {
+    updateStatus(item) {
+      //Atualizar Ativo no banco de dados
+      item.ativo = !item.ativo;
+      var data = {
+        ativo: item.ativo,
+      };
+      api.patch(`/tarefas/${item.id}/`, data).then((response) => {
+        console.log(response);
+      });
+    },
+    taskDelete(item) {
+      api.delete(`tarefas/${item.id}`).then(() => window.location.reload());
+    },
+  },
   mounted() {
     api.get("/tarefas").then((response) => {
       this.tasks = response.data;
     });
-  },
-  methods: {
-    updateStatus(item){
-      item.ativo = !item.ativo
-      var data = {
-        ativo: item.ativo
-      };
-      api.patch(`/tarefas/${item.id}/`, data).then((response) => {
-        console.log(response)
-      })
-    },
-    taskDelete(item){
-      api.delete(`tarefas/${item.id}`).then(() => window.alert("deletado", document.location.reload()))
-    }
   },
 };
 </script>

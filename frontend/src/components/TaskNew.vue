@@ -1,12 +1,10 @@
 <template>
   <v-form ref="form" lazy-validation class="background">
     <h2>Criar uma nova tarefa</h2>
-     <p>Proximo id é {{TotalId+1}}</p>
-    <v-text-field v-model="NewTask.id" label="id" required></v-text-field>
     <v-text-field
       v-model="NewTask.titulo"
       :counter="64"
-      :rules="NewTask.tituloRules"
+      :rules="tituloRules"
       label="Titulo"
       required
     ></v-text-field>
@@ -14,11 +12,14 @@
     <v-text-field
       v-model="NewTask.descricao"
       label="Descrição"
+      :counter="128"
+      :rules="descricaoRules"
       required
     ></v-text-field>
     <v-select
       v-model="NewTask.contato_id"
       :items="contatos"
+      :rules="contatoRules"
       item-text="nome"
       item-value="id"
       label="contatos"
@@ -46,35 +47,38 @@
 
 <script>
 import api from "@/services/api";
+
 export default {
   data: () => ({
     NewTask: {
-      id: 0,
       titulo: "",
       descricao: "",
-      ativo: false,
+      ativo: true,
       contato_id: "",
     },
-    TotalId: 0 ,
     tituloRules: [
-      (v) => !!v || "Precisa de um titulo",
+      (v) => !!v || "O titulo é obrigatório",
       (v) =>
-        (v && v.length <= 64) || "titulo tem que ter menos de 64 caracteres",
+        (v && v.length <= 64) || "O titulo tem que ter menos de 64 caracteres",
+    ],
+     descricaoRules: [
+      (v) => !!v || "Descrição é obrigatório",
+      (v) =>
+        (v && v.length <= 64) || "A descrição tem que ter menos de 128 caracteres",
+    ],
+    contatoRules: [
+      (v) => !!v || "E necessário atribuir essa tarefa a um contato",
     ],
     contatos: [],
   }),
-
   methods: {
     validate() {
       var data = this.NewTask;
       console.log(data);
       api.post("/tarefas/", data).then((response) => {
         console.log(response);
+        window.location.reload();
       });
-        api.get("/tarefas").then((response) => {
-      this.tasks = response.data;
-      document.location.reload()
-    });
     },
     reset() {
       this.$refs.form.reset();
@@ -87,10 +91,6 @@ export default {
     api.get("/contatos").then((response) => {
       this.contatos = response.data;
     });
-     api.get("/tarefas").then((response) =>{ 
-        console.log(Object.keys(response.data).length)
-        this.TotalId = Object.keys(response.data).length})
   },
-  
 };
 </script>

@@ -5,7 +5,7 @@ from .models import Contato
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tarefa
-        fields = ('id', 'titulo', 'descricao', 'contato_id' , 'ativo')
+        fields = ("id",'titulo', 'descricao', 'contato_id' , 'ativo')
     
     def to_representation(self, instance):
         rep = super(TodoSerializer, self).to_representation(instance)
@@ -15,4 +15,4 @@ class TodoSerializer(serializers.ModelSerializer):
 class ContatoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contato
-        fields = ('id', 'nome', 'email')
+        fields = ('id','nome', 'email')

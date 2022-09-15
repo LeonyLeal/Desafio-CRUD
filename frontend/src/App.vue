@@ -15,7 +15,7 @@
         bottom
         right
         class="font-lg"
-        @click="overlay = !overlay"
+        @click="taskOverlay = !taskOverlay"
       >
         +
       </v-btn>
@@ -26,22 +26,22 @@
         fixed
         bottom
         left
-        @click="contatoOverlay = !contatoOverlay"
+        @click="contactOverlay = !contactOverlay"
       >
         contato
       </v-btn>
 
-      <v-overlay :z-index="zIndex" :value="overlay">
-        <v-btn class="white--text" color="error" @click="overlay= false" absolute right top fab small>
+      <v-overlay :z-index="zIndex" :value="taskOverlay">
+        <v-btn class="white--text" color="error" @click="TaskOverlay= false" absolute right top fab small>
           x
         </v-btn>
         <TaskNew />
       </v-overlay>
-      <v-overlay :z-index="zIndex" :value="contatoOverlay">
-        <v-btn class="white--text" color="error" @click="contatoOverlay= false" absolute right top fab small>
+      <v-overlay :z-index="zIndex" :value="contactOverlay">
+        <v-btn class="white--text" color="error" @click="contactOverlay= false" absolute right top fab small>
           x
         </v-btn>
-        <ContatoNew/>
+        <ContactNew/>
       </v-overlay>
     </v-main>
   </v-app>
@@ -55,7 +55,7 @@
 </style>
 
 <script>
-import ContatoNew from './components/ContatoNew.vue';
+import ContactNew from './components/ContactNew.vue';
 import TaskList from "./components/TaskList";
 import TaskNew from "./components/TaskNew.vue";
 
@@ -65,13 +65,13 @@ export default {
   components: {
     TaskList,
     TaskNew,
-    ContatoNew,
+    ContactNew,
   },
 
   data: () => ({
-    overlay: false,
-    contatoOverlay: false,
-    zIndex: 10,
+    taskOverlay: false,
+    contactOverlay: false,
+    zIndex: 100,
   }),
 };
 </script>
